@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Cap Privacy</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}" type="text/css" media="screen">
+
+</head>
+<body>
+    <div class="login-box">
+      <h2>Data Cap Privacy</h2>
+      <h4>An enhanced privacy preservation approach with enforcing policies for processing big data in spark framework</h4>
+        <h6> Developed by: Sindhu J S </h6>
+      <form action="/generate_report" method="post" enctype="multipart/form-data">
+        <div class="user-box">
+            <label>Your Data</label>
+            <input type="file" name="file" id="file" placeholder="Upload Your File" required>
+        </div>
+        <div class="user-box">
+            <label>Your Policy</label>
+            <input type="file" name="policy_file" id="policy_file" placeholder="Upload Your Policy File" required>
+        </div>
+          <button type="submit" id="submit" name="submit">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            Generate Report
+            </button>
+      </form>
+      {% if error %}
+        <h3 style="color:red;margin-top: 20px;text-align:center;"> Please Fix the following error: {{error}} </h3>
+      {% endif %}
+      {% if name %}
+        <div class="filename">
+          <h4> Your Data in file - {{ name }}  </h4>
+        </div>
+      {% endif %}
+      <div class="data-table">
+        {% if data %}
+          <div class="data" style="overflow-x:auto;">
+            <h4> Your Uploaded Data </h4>
+            {% block content1 %}
+              {{data | safe}}
+            {% endblock %}
+          </div>
+        {% endif %}
+        {% if secure_data %}
+          <div class="secure-data" style="overflow-x:auto;">
+            <h4> Generated Secure Data </h4>
+            {% block content2 %}
+              {{secure_data | safe}}
+            {% endblock %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+label: my-policy
+version: 1
+rules:
+  - match:
+      name: description
+    actions:
+      - transform:
+          type: tokenizer
+          max_token_len: 10
+          key: my secret
+  - match:
+      name: age
+    actions:
+      - transform:
+          type: numeric-perturbation
+          dtype: Integer
+          min: -10
+          max: 10
+          seed: 4984
+  - match:
+      name: name
+    actions:
+      - transform:
+          type: tokenizer
+          max_token_len: 10
+          key: my secret
