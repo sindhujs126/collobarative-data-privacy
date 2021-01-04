@@ -7,7 +7,7 @@ import logging
 from os import system
 from typing import Any
 import cape_privacy as cape
-from fastapi import Request, APIRouter, UploadFile, File
+from fastapi import Request, APIRouter, UploadFile, File, Response as FileResponse, Form
 import pandas as pd
 
 from .. import main
@@ -31,11 +31,12 @@ async def index(request: Request):
 
 @router.post("/generate_report", tags=['Home'], response_model=Any, summary='Return the Generated Report with basic Website',
              description='Retrieves the Generated Report with basic Website', operation_id="generate_report")
-async def generate(request: Request, file: UploadFile = File(...), policy_file: UploadFile = File(...)):
+async def generate(request: Request, file: UploadFile = File(...), policy_file: UploadFile = File(...), download_data: Any = None):
     """
-
+s
     :param file:
     :param policy_file:
+    :param download_data:
     :param request:
     :return:
     """
@@ -53,6 +54,14 @@ async def generate(request: Request, file: UploadFile = File(...), policy_file: 
     secure_df = cape.apply_policy(policy, df)
     logger.info(secure_df.head())
     system(f"rm -rf /tmp/{policy_file.filename}*")
+
+    if download_data:
+        return FileResponse(
+            content=df.to_csv(), media_type='text/csv',
+            headers={
+                'content-disposition': f"attachment; filename=generate_data.csv",
+                'content-type': 'text/csv'
+            })
 
     return main.app.templates.TemplateResponse("index.html", {
         "request": request,

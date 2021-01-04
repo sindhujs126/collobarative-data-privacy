@@ -11,7 +11,7 @@
       <h2>Data Cap Privacy</h2>
       <h4>An enhanced privacy preservation approach with enforcing policies for processing big data in spark framework</h4>
         <h6> Developed by: Sindhu J S </h6>
-      <form action="/generate_report" method="post" enctype="multipart/form-data">
+      <form method="post" enctype="multipart/form-data">
         <div class="user-box">
             <label>Your Data</label>
             <input type="file" name="file" id="file" placeholder="Upload Your File" required>
@@ -20,13 +20,20 @@
             <label>Your Policy</label>
             <input type="file" name="policy_file" id="policy_file" placeholder="Upload Your Policy File" required>
         </div>
-          <button type="submit" id="submit" name="submit">
+          <button type="submit" id="submit" name="submit" formaction="/generate_report">
             <span></span>
             <span></span>
             <span></span>
             <span></span>
             Generate Report
-            </button>
+          </button>
+          <button type="submit" id="download_data" name="download_data" formaction="/generate_report?download_data=true">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            Download Report
+          </button>
       </form>
       {% if error %}
         <h3 style="color:red;margin-top: 20px;text-align:center;"> Please Fix the following error: {{error}} </h3>

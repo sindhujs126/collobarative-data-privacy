@@ -84,9 +84,9 @@ body {
   text-transform: uppercase;
   overflow: hidden;
   transition: .5s;
-  margin-top: 40px;
+  margin: 20px 40px;
   letter-spacing: 4px;
-  width: 100%;
+  width: 40%;
 }
 
 .login-box button:hover {
