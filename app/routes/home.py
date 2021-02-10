@@ -9,12 +9,17 @@ from typing import Any
 import cape_privacy as cape
 from fastapi import Request, APIRouter, UploadFile, File, Response as FileResponse, Form
 import pandas as pd
+import matplotlib.pyplot as plt
+from difflib import SequenceMatcher
 
 from .. import main
 
-
 router = APIRouter()
 logger = logging.getLogger(__name__)
+
+
+def privacy_score(a, b):
+    return float(100 - (SequenceMatcher(None, a, b).ratio() * 100))
 
 
 @router.get("/", tags=['Home'], response_model=Any, summary='Return the Basic HTML UI Page with basic Website',
@@ -53,6 +58,25 @@ s
     policy = cape.parse_policy(f"/tmp/{policy_file.filename}")
     secure_df = cape.apply_policy(policy, df)
     logger.info(secure_df.head())
+
+    df['20% recall'] = df['name'].apply(len)
+    df['secure-name'] = secure_df['name']
+    secure_df['40% recall'] = secure_df['name'].apply(len)
+    plot_data = pd.concat([df, secure_df], axis=1, ignore_index=False, sort=True)
+    plot_data.reset_index().plot(x="index", y=["20% recall", "40% recall"], kind="bar")
+    plt.title("Ranking Precision of the Proposed Technique.")
+    plt.xlabel("Precision")
+    plt.ylabel("Data set size (KB)")
+    plt.savefig(f'app/static/{file.filename}-sec.png')
+
+    df['similarity'] = df.apply(lambda x: privacy_score(x['name'], x['secure-name']), axis=1)
+    plot_data = pd.concat([df, secure_df], axis=1, ignore_index=False, sort=True)
+    plot_data.reset_index().plot(x="index", y=["similarity"], kind="bar")
+    plt.title("Privacy Score of the Proposed Technique.")
+    plt.xlabel("Client ID")
+    plt.ylabel("Privacy Score")
+    plt.savefig(f'app/static/{file.filename}-sim.png')
+
     system(f"rm -rf /tmp/{policy_file.filename}*")
 
     if download_data:

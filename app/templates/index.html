@@ -43,6 +43,16 @@
           <h4> Your Data in file - {{ name }}  </h4>
         </div>
       {% endif %}
+      {% if name %}
+      <div class="data-table">
+        <img src="/static/{{name}}-sec.png"/>
+        <img src="/static/{{name}}-sim.png"/>
+      </div>
+      <div class="data-table">
+<!--        <img src="/static/{{name}}-sim.png"/>-->
+<!--        <img src="/static/{{name}}-sec.png"/>-->
+      </div>
+      {% endif %}
       <div class="data-table">
         {% if data %}
           <div class="data" style="overflow-x:auto;">

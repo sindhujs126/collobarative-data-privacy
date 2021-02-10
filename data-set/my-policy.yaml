@@ -22,5 +22,5 @@ rules:
     actions:
       - transform:
           type: tokenizer
-          max_token_len: 10
-          key: my secret
+          max_token_len: 20
+          key: deep-secret
