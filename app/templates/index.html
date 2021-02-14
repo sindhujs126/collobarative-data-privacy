@@ -49,28 +49,20 @@
         <img src="/static/{{name}}-sim.png"/>
       </div>
       <div class="data-table">
-<!--        <img src="/static/{{name}}-sim.png"/>-->
+        <img src="/static/{{name}}-thi.png"/>
 <!--        <img src="/static/{{name}}-sec.png"/>-->
       </div>
       {% endif %}
-      <div class="data-table">
-        {% if data %}
-          <div class="data" style="overflow-x:auto;">
-            <h4> Your Uploaded Data </h4>
-            {% block content1 %}
-              {{data | safe}}
-            {% endblock %}
-          </div>
-        {% endif %}
-        {% if secure_data %}
+      {% if data %}
+        <div class="data-table">
           <div class="secure-data" style="overflow-x:auto;">
             <h4> Generated Secure Data </h4>
             {% block content2 %}
-              {{secure_data | safe}}
+              {{data | safe}}
             {% endblock %}
           </div>
-        {% endif %}
-      </div>
+        </div>
+      {% endif %}
     </div>
 </body>
 </html>
