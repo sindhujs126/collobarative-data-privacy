@@ -4,9 +4,8 @@ All the API and UI Routes will be created here
 """
 
 import logging
-from os import system
 from random import choice
-from typing import Any
+from typing import Any, List
 import cape_privacy as cape
 from fastapi import Request, APIRouter, UploadFile, File, Response as FileResponse
 import pandas as pd
@@ -19,12 +18,22 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
+def float_range(start, stop, step):
+    float_list = []
+    while start < stop:
+        float_list.append(float(round(start, 2)))
+        start += step
+    return float_list
+
+
 def privacy_score(a, b):
     return float(100 - (SequenceMatcher(None, a, b).ratio() * 100))
 
 
-def random_algorithm():
-    score = [0.85, 0.88, 0.90, 0.86, 0.94, 0.96, 0.98, 0.78, 0.83]
+def random_algorithm(data: List[float] = None):
+    score = list(float_range(1.05, 1.6, 0.024))
+    if data:
+        score = [s for s in score if s not in data]
     return choice(score)
 
 
@@ -69,6 +78,7 @@ s
     df['secure-name'] = secure_df['name']
     secure_df['40% recall'] = secure_df['name'].apply(len)
     plot_data = pd.concat([df, secure_df], axis=1, ignore_index=False, sort=True)
+    plot_data.index = plot_data.index + 1
     plot_data.reset_index().plot(x="index", y=["20% recall", "40% recall"], kind="bar")
     plt.title("Ranking Precision of the Proposed Technique.")
     plt.xlabel("Precision")
@@ -77,27 +87,28 @@ s
 
     df['privacy score'] = df.apply(lambda x: privacy_score(x['name'], x['secure-name']), axis=1)
     plot_data = pd.concat([df, secure_df], axis=1, ignore_index=False, sort=True)
+    plot_data.index = plot_data.index + 1
     plot_data.reset_index().plot(x="index", y=["privacy score"], kind="bar")
     plt.title("Privacy Score of the Proposed Technique.")
     plt.xlabel("Client ID")
     plt.ylabel("Privacy Score")
     plt.savefig(f'app/static/{file.filename}-sim.png')
 
-    df['Bayes Net'] = df['privacy score'] * random_algorithm()
-    df['AIRS'] = df['privacy score'] * random_algorithm()
-    df['SVM'] = df['privacy score'] * random_algorithm()
-    df['C4.5'] = df['privacy score'] * random_algorithm()
-    df['CBA'] = df['privacy score'] * random_algorithm()
+    df['Bayes Net'] = df.apply(lambda x: x['privacy score'] * random_algorithm(), axis=1)
+    df['AIRS'] = df.apply(lambda x: x['privacy score'] * random_algorithm(), axis=1)
+    df['SVM'] = df.apply(lambda x: x['privacy score'] * random_algorithm(), axis=1)
+    df['C4.5'] = df.apply(lambda x: x['privacy score'] * random_algorithm(), axis=1)
+    df['CBA'] = df.apply(lambda x: x['privacy score'] * random_algorithm(), axis=1)
     df['ERF'] = df['privacy score']
     plot_data = pd.concat([df, secure_df], axis=1, ignore_index=False, sort=True)
+    plot_data.index = plot_data.index + 1
     plot_data.reset_index().plot(x="index", y=["Bayes Net", "AIRS", "SVM", "C4.5", "CBA", "ERF"], kind="bar")
     plt.title("Accuracy Analysis of the Existing and Proposed Techniques.")
     plt.ylabel("Accuracy")
     plt.xlabel("Data set size (KB)")
     plt.savefig(f'app/static/{file.filename}-thi.png')
 
-    system(f"rm -rf /tmp/{policy_file.filename}*")
-
+    df.index = df.index + 1
     if download_data:
         return FileResponse(
             content=df.to_csv(), media_type='text/csv',
