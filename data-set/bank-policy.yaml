@@ -1,0 +1,44 @@
+label: bank-policy
+version: 1
+rules:
+  - match:
+      name: CustomerId
+    actions:
+      - transform:
+          type: numeric-perturbation
+          dtype: Integer
+          min: 10
+          max: 1000000
+          seed: 4984
+  - match:
+      name: name
+    actions:
+      - transform:
+          type: tokenizer
+          max_token_len: 10
+          key: name-secret
+  - match:
+      name: CreditScore
+    actions:
+      - transform:
+          type: numeric-perturbation
+          dtype: Integer
+          min: 10
+          max: 100
+          seed: 2334
+  - match:
+      name: Geography
+    actions:
+      - transform:
+          type: tokenizer
+          max_token_len: 20
+          key: address-secret
+  - match:
+      name: Balance
+    actions:
+      - transform:
+          type: numeric-perturbation
+          dtype: Integer
+          min: 0
+          max: 100000
+          seed: 7234

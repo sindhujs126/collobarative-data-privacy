@@ -79,20 +79,22 @@ s
     secure_df['40% recall'] = secure_df['name'].apply(len)
     plot_data = pd.concat([df, secure_df], axis=1, ignore_index=False, sort=True)
     plot_data.index = plot_data.index + 1
-    plot_data.reset_index().plot(x="index", y=["20% recall", "40% recall"], kind="bar")
+    plot_data.head(6).reset_index().plot(x="index", y=["20% recall", "40% recall"], kind="bar")
     plt.title("Ranking Precision of the Proposed Technique.")
     plt.xlabel("Precision")
     plt.ylabel("Data set size (KB)")
     plt.savefig(f'app/static/{file.filename}-sec.png')
+    logger.info("graph one generated")
 
     df['privacy score'] = df.apply(lambda x: privacy_score(x['name'], x['secure-name']), axis=1)
     plot_data = pd.concat([df, secure_df], axis=1, ignore_index=False, sort=True)
     plot_data.index = plot_data.index + 1
-    plot_data.reset_index().plot(x="index", y=["privacy score"], kind="bar")
+    plot_data.head(6).reset_index().plot(x="index", y=["privacy score"], kind="bar")
     plt.title("Privacy Score of the Proposed Technique.")
     plt.xlabel("Client ID")
     plt.ylabel("Privacy Score")
     plt.savefig(f'app/static/{file.filename}-sim.png')
+    logger.info("graph two generated")
 
     df['Bayes Net'] = df.apply(lambda x: x['privacy score'] * random_algorithm(), axis=1)
     df['AIRS'] = df.apply(lambda x: x['privacy score'] * random_algorithm(), axis=1)
@@ -102,11 +104,12 @@ s
     df['ERF'] = df['privacy score']
     plot_data = pd.concat([df, secure_df], axis=1, ignore_index=False, sort=True)
     plot_data.index = plot_data.index + 1
-    plot_data.reset_index().plot(x="index", y=["Bayes Net", "AIRS", "SVM", "C4.5", "CBA", "ERF"], kind="bar")
+    plot_data.head(6).reset_index().plot(x="index", y=["Bayes Net", "AIRS", "SVM", "C4.5", "CBA", "ERF"], kind="bar")
     plt.title("Accuracy Analysis of the Existing and Proposed Techniques.")
     plt.ylabel("Accuracy")
     plt.xlabel("Data set size (KB)")
     plt.savefig(f'app/static/{file.filename}-thi.png')
+    logger.info("graph three generated")
 
     df.index = df.index + 1
     if download_data:
@@ -121,6 +124,6 @@ s
         "request": request,
         "name": file.filename,
         "file": file,
-        "data": df.to_html(),
-        "secure_data": secure_df.to_html()
+        "data": df.head(10).to_html(),
+        "secure_data": secure_df.head(10).to_html()
     })
