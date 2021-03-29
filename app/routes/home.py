@@ -124,6 +124,6 @@ s
         "request": request,
         "name": file.filename,
         "file": file,
-        "data": df.head(10).to_html(),
-        "secure_data": secure_df.head(10).to_html()
+        "data": df.head(20).to_html(),
+        "secure_data": secure_df.head(20).to_html()
     })
